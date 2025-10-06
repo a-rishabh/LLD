@@ -21,6 +21,8 @@ The system should:
 4. **Calculate fees** when the vehicle exits.  
 5. **Free the spot** for future vehicles.
 
+---
+
 ### UML
 ```mermaid
 classDiagram
