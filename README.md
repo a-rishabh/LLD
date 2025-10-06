@@ -1,4 +1,4 @@
-# 🧠 Low-Level Design (LLD) Practice — FAANG-Style
+# 🧠 Low-Level Design (LLD) Problems
 
 Welcome to my **Low-Level Design** preparation repository. This repo contains detailed, production-style implementations of classic **Object-Oriented Design** problems that are frequently asked in interviews at companies like Amazon, Uber, Microsoft, and Atlassian.
 
