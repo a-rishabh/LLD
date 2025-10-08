@@ -14,4 +14,8 @@ class Slot:
     def has_stock(self) -> bool:
         return self.quantity > 0
 
-    
+    def dispense_one(self) -> None:
+        if not self.has_stock():
+            from .errors import OutOfStock
+            raise OutOfStock(f"{self.product.code} is out of stock")
+        self.quantity -= 1
