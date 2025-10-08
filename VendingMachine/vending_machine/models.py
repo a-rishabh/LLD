@@ -11,4 +11,7 @@ class Slot:
     product: Product
     quantity: int = 0
 
+    def has_stock(self) -> bool:
+        return self.quantity > 0
+
     
