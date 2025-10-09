@@ -22,3 +22,15 @@ class CashDrawer:
         if self.drawer[denom] < count:
             raise CannotMakeChange(f"Not enough {denom.name} to remove")
         self.drawer[denom] -= count
+
+    def total_amount(self) -> int:
+        """Return total value in cents."""
+        return sum(denom * cnt for denom, cnt in self.drawer.items())
+
+    def can_make_change(self, amount: int) -> bool:
+        """Greedy check — true if we can make change with current coins."""
+        try:
+            _ = self._greedy_change(amount, dry_run=True)
+            return True
+        except CannotMakeChange:
+            return False
