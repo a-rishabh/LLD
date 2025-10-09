@@ -34,3 +34,10 @@ class CashDrawer:
             return True
         except CannotMakeChange:
             return False
+        
+    def make_change(self, amount: int) -> Dict[Denomination, int]:
+        """Dispense change; updates drawer."""
+        change = self._greedy_change(amount)
+        for denom, cnt in change.items():
+            self.remove(denom, cnt)
+        return change
