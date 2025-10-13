@@ -41,3 +41,12 @@ class CashDrawer:
         for denom, cnt in change.items():
             self.remove(denom, cnt)
         return change
+
+    # ---------------- Helpers ---------------- #
+
+    def _greedy_change(self, amount: int, dry_run: bool = False) -> Dict[Denomination, int]:
+
+        pass
+
+    def __repr__(self) -> str:
+        pass
