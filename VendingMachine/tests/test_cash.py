@@ -12,7 +12,12 @@ def test_total_and_add_remove():
     assert cd.drawer[Denomination.C25] == 2
 
 def test_make_change_exact():
-    pass
+    cd = CashDrawer({Denomination.C25: 4, Denomination.C10: 2, Denomination.C1: 5})
+    change = cd.make_change(65)
+    total = sum(k * v for k, v in change.items())
+    assert total == 65
+    # Drawer total reduced accordingly
+    assert cd.total_amount() == (4*25 + 2*10 + 5*1) - 65
 
 def test_cannot_make_change():
     cd = CashDrawer({Denomination.C25: 1})
