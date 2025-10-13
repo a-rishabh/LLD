@@ -45,8 +45,25 @@ class CashDrawer:
     # ---------------- Helpers ---------------- #
 
     def _greedy_change(self, amount: int, dry_run: bool = False) -> Dict[Denomination, int]:
+        """Return minimal coins using greedy algorithm (assumes canonical set)."""
+        remaining = amount
+        change: Dict[Denomination, int] = {}
 
-        pass
+        for denom in CANONICAL_DESC:
+            if remaining <= 0:
+                break
+            use = min(remaining // denom, self.drawer.get(denom, 0))
+            if use > 0:
+                change[denom] = use
+                remaining -= denom * use
+
+        if remaining > 0:
+            raise CannotMakeChange(f"Cannot make exact change for {amount}¢")
+
+        if dry_run:
+            return change
+
+        return change
 
     def __repr__(self) -> str:
-        pass
+        return f"CashDrawer(total={self.total_amount()}¢, coins={dict(self.drawer)})"
