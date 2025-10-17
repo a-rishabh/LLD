@@ -56,7 +56,7 @@ class Inventory:
 
     def available_products(self) -> Dict[str, int]:
         """Return {code: quantity} for available items."""
-        pass
+        return {c: s.quantity for c, s in self.slots.items()}
 
     def __repr__(self) -> str:
-        pass
+        return f"Inventory({self.available_products()})"
