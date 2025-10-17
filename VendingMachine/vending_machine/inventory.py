@@ -14,10 +14,16 @@ class Inventory:
 
     def add_slot(self, product: Product, quantity: int) -> None:
         """Add a new slot or refill an existing one."""
-        pass
+        code = product.code
+        if code in self.slots:
+            self.slots[code].quantity += quantity
+        else:
+            self.slots[code] = Slot(product, quantity)
 
     def refill(self, code: str, quantity: int) -> None:
-        pass
+        if code not in self.slots:
+            raise InvalidSelection(f"Slot {code} not found")
+        self.slots[code].quantity += quantity
 
     # ---------------- User Ops ---------------- #
 
