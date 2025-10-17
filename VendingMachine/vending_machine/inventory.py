@@ -28,16 +28,29 @@ class Inventory:
     # ---------------- User Ops ---------------- #
 
     def get_product(self, code: str) -> Product:
-        pass
+        if code not in self.slots:
+            raise InvalidSelection(f"Invalid code {code}")
+        return self.slots[code].product
 
     def get_price(self, code: str) -> int:
-        pass
+        if code not in self.slots:
+            raise InvalidSelection(f"Invalid code {code}")
+        return self.slots[code].product.price_cents
 
     def check_stock(self, code: str) -> bool:
-        pass
+        if code not in self.slots:
+            raise InvalidSelection(f"Invalid code {code}")
+        return self.slots[code].has_stock()
+
     def dispense(self, code: str) -> Product:
         """Dispense one unit of the given code."""
-        pass
+        if code not in self.slots:
+            raise InvalidSelection(f"Invalid code {code}")
+        slot = self.slots[code]
+        if not slot.has_stock():
+            raise OutOfStock(f"Product {code} is out of stock")
+        slot.dispense_one()
+        return slot.product
 
     # ---------------- Diagnostics ---------------- #
 
