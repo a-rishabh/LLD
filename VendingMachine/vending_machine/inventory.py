@@ -1,12 +1,14 @@
 from typing import Dict
 from .models import Slot, Product
+from .errors import InvalidSelection, OutOfStock
+
 
 class Inventory:
     """Manages product slots and stock counts."""
 
     def __init__(self, slots: Dict[str, Slot] | None = None):
         # Keyed by product code like "A1", "B2"
-        pass
+        self.slots: Dict[str, Slot] = slots or {}
 
     # ---------------- Admin Ops ---------------- #
 
