@@ -43,12 +43,27 @@ class CashPayment(PaymentMethod):
 
     def compute_change(self, amount_due: int) -> Optional[dict]:
         """Compute change (without updating drawer)."""
-        pass
+        if self.inserted < amount_due:
+            raise InsufficientFunds(f"Need {amount_due - self.inserted}¢ more")
+        change = self.inserted - amount_due
+        if change == 0:
+            return {}
+        if not self.drawer.can_make_change(change):
+            raise CannotMakeChange(f"Cannot return {change}¢ in change")
+        return self.drawer._greedy_change(change, dry_run=True)
 
     def dispense_change(self, amount_due: int) -> dict:
         """Actually dispense change and update drawer."""
-        pass
+        change_amount = self.inserted - amount_due
+        if change_amount <= 0:
+            return {}
+        return self.drawer.make_change(change_amount)
 
     def refund(self) -> dict:
         """Refund full amount inserted."""
-        pass
+        if self.inserted == 0:
+            return {}
+        refund_amount = self.inserted
+        self.inserted = 0
+        # No drawer removal—assume manual refund
+        return {"REFUND": refund_amount}
