@@ -67,3 +67,23 @@ class CashPayment(PaymentMethod):
         self.inserted = 0
         # No drawer removal—assume manual refund
         return {"REFUND": refund_amount}
+
+
+# -------------------------------------------------------------------- #
+#                            CARD PAYMENT (Stub)                       #
+# -------------------------------------------------------------------- #
+
+class CardPayment(PaymentMethod):
+    """Stub for card-based payment system."""
+
+    def __init__(self):
+        self.charged = False
+
+    def pay(self, amount_due: int) -> bool:
+        # Simulate successful card authorization
+        self.charged = True
+        return True
+
+    def refund(self) -> None:
+        if self.charged:
+            self.charged = False
