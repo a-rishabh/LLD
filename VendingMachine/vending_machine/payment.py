@@ -32,10 +32,14 @@ class CashPayment(PaymentMethod):
 
     def insert(self, denom: Denomination, count: int = 1) -> None:
         """Simulate inserting cash into machine."""
-        pass
+        self.drawer.add(denom, count)
+        self.inserted += denom * count
 
     def pay(self, amount_due: int) -> bool:
-        pass
+        if self.inserted < amount_due:
+            raise InsufficientFunds(f"Need {amount_due - self.inserted}¢ more")
+        # Payment succeeds, any extra change handled externally
+        return True
 
     def compute_change(self, amount_due: int) -> Optional[dict]:
         """Compute change (without updating drawer)."""
