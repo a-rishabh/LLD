@@ -114,14 +114,16 @@ class DispenseState(State):
 
 class ChangeState(State):
     def insert_money(self, amount):
-        pass
+        raise NotInRightState("Wait until change dispensed")
 
     def select_product(self, code: str):
-        pass
+        raise NotInRightState("Wait until change dispensed")
 
     def dispense(self):
         """Dispense change and return to idle."""
-        pass
+        change = self.machine.last_change or {}
+        self.machine.transition_to(self.machine.idle_state)
+        return change
 
     def cancel(self):
-        pass
+        raise NotInRightState("No active transaction to cancel")
