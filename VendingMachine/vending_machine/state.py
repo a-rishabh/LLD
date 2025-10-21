@@ -53,16 +53,30 @@ class IdleState(State):
 
 class HasMoneyState(State):
     def insert_money(self, amount):
-        pass
+        self.machine.current_payment.insert(*amount)  # (denom, count)
+        # Stay in HasMoneyState
 
     def select_product(self, code: str):
-        pass
+        inv = self.machine.inventory
+        pay = self.machine.current_payment
+        price = inv.get_price(code)
+        if not inv.check_stock(code):
+            raise OutOfStock(f"{code} is out of stock")
+
+        if pay.inserted < price:
+            raise InsufficientFunds(f"Need {price - pay.inserted}¢ more")
+
+        # Proceed to dispense
+        self.machine.selected_code = code
+        self.machine.transition_to(self.machine.dispense_state)
 
     def dispense(self):
-        pass
+        raise NotInRightState("Select product before dispensing")
 
     def cancel(self):
-        pass
+        refund = self.machine.current_payment.refund()
+        self.machine.transition_to(self.machine.idle_state)
+        return refund
 
 
 # -------------------------------------------------------------------- #
