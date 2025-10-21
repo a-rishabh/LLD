@@ -85,16 +85,27 @@ class HasMoneyState(State):
 
 class DispenseState(State):
     def insert_money(self, amount):
-        pass
+        raise NotInRightState("Already dispensing")
 
     def select_product(self, code: str):
-        pass
+        raise NotInRightState("Product already selected")
 
     def dispense(self):
-        pass
+        inv = self.machine.inventory
+        pay = self.machine.current_payment
+        code = self.machine.selected_code
+        product = inv.dispense(code)
+        price = product.price_cents
+
+        # Compute and transition to change state
+        change = pay.dispense_change(price)
+        self.machine.last_dispensed = product
+        self.machine.last_change = change
+        self.machine.transition_to(self.machine.change_state)
+        return product
 
     def cancel(self):
-        pass
+        raise NotInRightState("Cannot cancel during dispensing")
 
 
 # -------------------------------------------------------------------- #
