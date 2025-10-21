@@ -32,23 +32,70 @@ class State(ABC):
 #                            IDLE STATE                                #
 # -------------------------------------------------------------------- #
 
+class IdleState(State):
+    def insert_money(self, amount):
+        pass
+
+    def select_product(self, code: str):
+        pass
+
+    def dispense(self):
+        pass
+
+    def cancel(self):
+        pass
 
 
 # -------------------------------------------------------------------- #
 #                            HAS MONEY STATE                           #
 # -------------------------------------------------------------------- #
 
+class HasMoneyState(State):
+    def insert_money(self, amount):
+        pass
+
+    def select_product(self, code: str):
+        pass
+
+    def dispense(self):
+        pass
+
+    def cancel(self):
+        pass
 
 
 # -------------------------------------------------------------------- #
 #                            DISPENSE STATE                            #
 # -------------------------------------------------------------------- #
 
+class DispenseState(State):
+    def insert_money(self, amount):
+        pass
 
+    def select_product(self, code: str):
+        pass
+
+    def dispense(self):
+        pass
+
+    def cancel(self):
+        pass
 
 
 # -------------------------------------------------------------------- #
 #                            CHANGE STATE                              #
 # -------------------------------------------------------------------- #
 
+class ChangeState(State):
+    def insert_money(self, amount):
+        pass
 
+    def select_product(self, code: str):
+        pass
+
+    def dispense(self):
+        """Dispense change and return to idle."""
+        pass
+
+    def cancel(self):
+        pass
