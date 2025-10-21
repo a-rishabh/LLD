@@ -34,16 +34,17 @@ class State(ABC):
 
 class IdleState(State):
     def insert_money(self, amount):
-        pass
+        self.machine.current_payment.insert(*amount)
+        self.machine.transition_to(self.machine.has_money_state)
 
     def select_product(self, code: str):
-        pass
+        raise NotInRightState("Insert money first")
 
     def dispense(self):
-        pass
+        raise NotInRightState("No product selected")
 
     def cancel(self):
-        pass
+        raise NotInRightState("Nothing to cancel in IDLE")
 
 
 # -------------------------------------------------------------------- #
