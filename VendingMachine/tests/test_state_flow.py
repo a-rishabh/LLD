@@ -9,8 +9,28 @@ from vending_machine.enums import Denomination
 
 def build_machine():
     # minimal setup
-    pass
+    drawer = CashDrawer({Denomination.C25: 10})
+    inv = Inventory({
+        "A1": Slot(Product("A1", "Coke", 75), 3)
+    })
+    vm = VendingMachine(drawer, inv)
+    return vm
 
 
 def test_state_transitions():
-    pass
+    vm = build_machine()
+    assert isinstance(vm.state, IdleState)
+
+    vm.insert_money((Denomination.C25, 4))  # 100¢
+    assert isinstance(vm.state, HasMoneyState)
+
+    vm.select_product("A1")
+    assert isinstance(vm.state, DispenseState)
+
+    prod = vm.dispense()
+    assert prod.name == "Coke"
+    assert isinstance(vm.state, ChangeState)
+
+    change = vm.dispense()  # triggers ChangeState.dispense()
+    assert isinstance(change, dict)
+    assert isinstance(vm.state, IdleState)
