@@ -9,7 +9,12 @@ from vending_machine.enums import Denomination
 
 def build_machine():
     # minimal setup
-    pass
+    drawer = CashDrawer({Denomination.C25: 10})
+    inv = Inventory({
+        "A1": Slot(Product("A1", "Coke", 75), 3)
+    })
+    vm = VendingMachine(drawer, inv)
+    return vm
 
 
 def test_state_transitions():
