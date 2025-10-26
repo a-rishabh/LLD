@@ -53,4 +53,19 @@ class VendingMachine:
         """Switch current state."""
         self.state = new_state
 
-    
+    # ---------------- Admin Utilities ---------------- #
+
+    def admin_refill(self, code: str, qty: int):
+        """Refill a slot (admin)."""
+        self.inventory.refill(code, qty)
+
+    def admin_status(self) -> dict:
+        """Diagnostics — available stock & total cash."""
+        return {
+            "state": type(self.state).__name__,
+            "inventory": self.inventory.available_products(),
+            "drawer_total": self.drawer.total_amount(),
+        }
+
+    def __repr__(self):
+        return f"<VendingMachine state={type(self.state).__name__} balance={self.current_payment.inserted}¢>"
