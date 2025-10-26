@@ -47,4 +47,10 @@ class VendingMachine:
         """Cancel current transaction (if applicable)."""
         return self.state.cancel()
 
+    # ---------------- Internal Helpers ---------------- #
+
+    def transition_to(self, new_state: State):
+        """Switch current state."""
+        self.state = new_state
+
     
