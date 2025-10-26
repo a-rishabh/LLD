@@ -30,4 +30,21 @@ class VendingMachine:
         self.last_dispensed = None
         self.last_change: Optional[dict] = None
 
+    # ---------------- Core Actions ---------------- #
+
+    def insert_money(self, amount: tuple[Denomination, int]):
+        """Delegate to current state's insert_money logic."""
+        self.state.insert_money(amount)
+
+    def select_product(self, code: str):
+        self.state.select_product(code)
+
+    def dispense(self):
+        """Trigger dispense flow depending on state."""
+        return self.state.dispense()
+
+    def cancel(self):
+        """Cancel current transaction (if applicable)."""
+        return self.state.cancel()
+
     
