@@ -1,128 +1,88 @@
-# Vending Machine — Low Level Design (LLD)
+# 🥤 Vending Machine — Low Level Design (LLD)
 
-Design and implement a **Vending Machine** using SOLID OOP and the **State pattern**. This is a staple LLD interview problem that tests modeling, transitions, error handling, and payments.
-
----
-
-## Problem Statement
-
-Build a vending machine that:
-
-* Accepts coins/bills or a card (pluggable payments).
-* Lets a user **select a product** and **dispense** it.
-* Handles **insufficient funds**, **out-of-stock**, **cancel/refund**, and **change**.
-* Supports **admin operations**: refill inventory, collect cash, load coins.
-
-**Constraints/Assumptions**
-
-* Products have `code`, `name`, `price`, and `quantity`.
-* Accepted denominations (configurable): `1, 5, 10, 25, 100` (cents).
-* Return **change with the least coins** (greedy works with canonical US denominations).
-* Timeouts / inactivity not modeled (keep MVP focused).
+A FAANG-style **Low Level Design** problem that models a real-world **Vending Machine** using Object-Oriented Design and key design patterns — **State**, **Strategy**, and **Factory**.
 
 ---
 
-## Why This Problem (Interview Signals)
+## 🎯 Goal
 
-* **Stateful workflows** → State pattern & transitions.
-* **Domain modeling** → Product, Inventory, Cash drawer, Payment.
-* **Robustness** → Errors, refunds, race-free updates.
-* **Extensibility** → Add new payments, discounts, or multi-buy without rewriting core.
-
----
-
-## Core Entities & Responsibilities
-
-| Entity           | Responsibility                                                                |
-| ---------------- | ----------------------------------------------------------------------------- |
-| `Product`        | Code, name, price (cents)                                                     |
-| `Inventory`      | Tracks counts per product; refill/decrement                                   |
-| `CashDrawer`     | Holds coins/bills; add/remove; make change                                    |
-| `PaymentMethod`  | Interface for `cash`, `card` etc.                                             |
-| `VendingMachine` | Orchestrator; holds current `State` and collaborators                         |
-| `State`          | Abstract state with transitions: `Idle → HasMoney → Dispense → Change → Idle` |
+Design a vending machine that:
+- Accepts cash or (future) card payments.
+- Lets users **insert money**, **select products**, and **dispense** items.
+- Handles **change**, **refunds**, **insufficient funds**, and **out-of-stock** scenarios.
+- Allows **admin actions** like refilling stock and viewing cash totals.
 
 ---
 
-## State Machine (MVP)
+## 🧩 System Overview
 
-```
-Idle
- ├─ insert_money(amount) → HasMoney
- └─ select_product(code) → error (need money)
+### 🧱 Core Entities
 
-HasMoney
- ├─ select_product(code) → (enough $ & in stock) ? Dispense : error/insufficient/change remain in HasMoney
- ├─ insert_money(amount) → HasMoney (accumulate)
- └─ cancel() → Change → Idle
-
-Dispense
- ├─ dispense() → Change
-
-Change
- ├─ return_change() → Idle
-```
+| Class | Responsibility |
+|--------|----------------|
+| `VendingMachine` | Orchestrates workflow via states |
+| `State` (Idle, HasMoney, Dispense, Change) | Encapsulates behavior for each phase |
+| `Inventory` | Tracks products and stock |
+| `CashDrawer` | Stores coins/bills and makes change |
+| `PaymentMethod` | Abstract payment strategy |
+| `CashPayment` | Handles cash insertions and refunds |
+| `Product` / `Slot` | Represents items and their quantities |
 
 ---
 
-## Design Patterns
+## 🧠 UML Class Diagram
 
-* **State**: encapsulates behavior per machine state (Idle/HasMoney/Dispense/Change).
-* **Strategy (Payment)**: case-by-case payment methods (`CashPayment`, `CardPayment`).
-* **Factory (optional)**: product creation from config/JSON.
+```mermaid
+classDiagram
+    class VendingMachine {
+        +insert_money(amount)
+        +select_product(code)
+        +dispense()
+        +cancel()
+        +transition_to(State)
+    }
 
----
+    class State {
+        +insert_money(amount)
+        +select_product(code)
+        +dispense()
+        +cancel()
+    }
 
-## Key Scenarios to Support
+    class IdleState
+    class HasMoneyState
+    class DispenseState
+    class ChangeState
 
-* Pay exact, select item, dispense, no change.
-* Pay extra, dispense, **return change**.
-* Select with **insufficient funds** ⇒ helpful error.
-* **Out-of-stock** ⇒ allow reselection or refund.
-* **Cancel** anytime in `HasMoney` ⇒ refund all.
-* **Admin**: refill items, load coins, empty cash.
+    class PaymentMethod
+    class CashPayment
+    class CardPayment
 
----
+    class CashDrawer {
+        +add()
+        +remove()
+        +make_change()
+    }
 
-## Project Structure (planned)
+    class Inventory {
+        +refill()
+        +dispense()
+        +available_products()
+    }
 
-```
-vending_machine/
-  __init__.py
-  enums.py          # Denominations, StateType
-  errors.py         # Domain exceptions
-  models.py         # Product, LineItem
-  cash.py           # CashDrawer + change-making
-  inventory.py      # Inventory
-  payment.py        # PaymentMethod, CashPayment, (Card stub)
-  state.py          # Abstract State + concrete Idle/HasMoney/Dispense/Change
-  machine.py        # VendingMachine orchestrator
-  cli.py            # Demo
+    class Product {
+        +code
+        +name
+        +price_cents
+    }
 
-tests/
-  test_cash.py
-  test_inventory.py
-  test_state_flow.py
-  test_machine.py
-```
-
----
-
-## Minimal Public API (MVP)
-
-```python
-vm.insert_money(25)          # cents
-vm.select_product("A1")
-vm.dispense()                # triggers state transition
-vm.cancel()                  # in HasMoney → refund
-vm.admin_refill("A1", 10)
-```
-
----
-
-## Interview Tips
-
-* Open with the **state diagram**; show transitions.
-* Keep **money** and **inventory** separate from the state logic (SRP).
-* Emphasize **Strategy for payments** to support cards later without changing state code.
-* Discuss edge cases early: out-of-stock, insufficient change, cancel/refund.
+    VendingMachine --> State
+    State <|-- IdleState
+    State <|-- HasMoneyState
+    State <|-- DispenseState
+    State <|-- ChangeState
+    VendingMachine --> PaymentMethod
+    PaymentMethod <|-- CashPayment
+    PaymentMethod <|-- CardPayment
+    VendingMachine --> Inventory
+    VendingMachine --> CashDrawer
