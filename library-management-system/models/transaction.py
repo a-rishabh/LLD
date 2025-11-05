@@ -11,4 +11,5 @@ class BookLending:
         self.due_date = self.issue_date + timedelta(days=BookLending.BORROW_DAYS)
         self.return_date = None
 
-    
+    def mark_returned(self):
+        self.return_date = date.today()
