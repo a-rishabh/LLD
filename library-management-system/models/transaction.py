@@ -13,3 +13,10 @@ class BookLending:
 
     def mark_returned(self):
         self.return_date = date.today()
+
+    def is_overdue(self) -> bool:
+        if not self.return_date:
+            return date.today() > self.due_date
+        return self.return_date > self.due_date
+
+    
