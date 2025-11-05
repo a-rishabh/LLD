@@ -19,4 +19,6 @@ class BookLending:
             return date.today() > self.due_date
         return self.return_date > self.due_date
 
-    
+    def __repr__(self):
+        return (f"<Lending {self.book_item.book.title} to {self.member_id} "
+                f"| Due: {self.due_date}>")
